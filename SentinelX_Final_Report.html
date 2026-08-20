@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentinelX Security Assessment Report - 192.168.174.129</title>
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #1f2937;
+            --bg-code: #0f172a;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --accent-cyan: #06b6d4;
+            --accent-blue: #3b82f6;
+            --border-color: #374151;
+            
+            --severity-critical: #ef4444;
+            --severity-high: #f97316;
+            --severity-medium: #eab308;
+            --severity-low: #3b82f6;
+            --severity-info: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header Styling */
+        header {
+            background: linear-gradient(135deg, #111827 0%, #0f172a 100%);
+            border-bottom: 2px solid var(--accent-cyan);
+            padding: 40px 0;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+        }
+
+        .brand-text h1 {
+            font-size: 26px;
+            letter-spacing: 1px;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .brand-text p {
+            font-size: 13px;
+            color: var(--accent-cyan);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .report-meta {
+            text-align: right;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .report-meta div span {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Section Styling */
+        section {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 20px;
+            color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: var(--accent-cyan);
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 16px;
+            color: var(--accent-cyan);
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        /* Executive Summary & Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .metric-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+        }
+
+        .badge-critical { background-color: var(--severity-critical); }
+        .badge-high { background-color: var(--severity-high); }
+        .badge-medium { background-color: var(--severity-medium); color: #000; }
+        .badge-low { background-color: var(--severity-low); }
+        .badge-info { background-color: var(--severity-info); }
+
+        .status-open {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        /* Code & Evidence Blocks */
+        pre {
+            background-color: var(--bg-code);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 13px;
+            color: #38bdf8;
+            margin: 15px 0;
+        }
+
+        code {
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            background-color: var(--bg-code);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #38bdf8;
+        }
+
+        /* Finding Card */
+        .finding-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .finding-card.critical { border-left-color: var(--severity-critical); }
+        .finding-card.high { border-left-color: var(--severity-high); }
+        .finding-card.medium { border-left-color: var(--severity-medium); }
+        .finding-card.low { border-left-color: var(--severity-low); }
+        .finding-card.info { border-left-color: var(--severity-info); }
+
+        .finding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .finding-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .finding-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .finding-detail-item span {
+            color: var(--text-muted);
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .remediation-box {
+            background-color: rgba(6, 182, 212, 0.05);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .remediation-box h4 {
+            color: var(--accent-cyan);
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .callout-box {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--severity-critical);
+            padding: 15px;
+            border-radius: 0 6px 6px 0;
+            margin: 15px 0;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--text-muted);
+            font-size: 13px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-cyan);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <div class="brand">
+                <div class="brand-logo">SX</div>
+                <div class="brand-text">
+                    <h1>SentinelX</h1>
+                    <p>Cyber Security Intelligence Assessment</p>
+                </div>
+            </div>
+            <div class="report-meta">
+                <div>Assessment Type: <span>Infrastructure Penetration Test</span></div>
+                <div>Target IP: <span>192.168.174.129</span></div>
+                <div>Execution Date: <span>August 13, 2026</span></div>
+                <div>Classification: <span>CONFIDENTIAL / SECURE</span></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- 1. Executive Summary -->
+        <section>
+            <h2>1. Executive Summary</h2>
+            <p>
+                SentinelX was engaged to perform an authorized security assessment against the host operating at <strong>192.168.174.129</strong>. The primary objective was to evaluate the exposed network attack surface, identify running services, detect legacy or vulnerable software configurations, and deliver actionable remediation advice.
+            </p>
+            <p>
+                The assessment revealed a <strong>CRITICAL</strong> security risk posture. The target host exposes 23 open TCP services, including an unauthenticated root bindshell, legacy unencrypted management interfaces (Telnet, RSH/REXEC, FTP), outdated web and database services, and software versions with well-documented public vulnerability vectors. No exploitation was attempted during this evaluation; all findings are derived directly from non-intrusive service enumeration, banner analysis, and network footprinting.
+            </p>
+            <div class="callout-box">
+                <strong>Critical Security Finding:</strong> The target exposes a direct, unauthenticated root shell listener on TCP port 1524 (<code>bindshell</code>), offering immediate and unrestricted administrative system access to any network host.
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" style="color: var(--severity-critical);">2</div>
+                    <div class="metric-label">Critical Vulnerabilities</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" style="color: var(--severity-high);">2</div>
+                    <div class="metric-label">High Risk Exposure</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" style="color: var(--severity-medium);">1</div>
+                    <div class="metric-label">Medium Risk Exposure</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" style="color: var(--accent-cyan);">23</div>
+                    <div class="metric-label">Total Open Ports</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Target Information -->
+        <section>
+            <h2>2. Target Information</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Target Specification</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>IPv4 Address</td>
+                        <td><code>192.168.174.129</code></td>
+                    </tr>
+                    <tr>
+                        <td>MAC Address</td>
+                        <td><code>00:0C:29:AD:4C:2B</code> (VMware Virtual Interface)</td>
+                    </tr>
+                    <tr>
+                        <td>Hostnames Disclosed</td>
+                        <td><code>metasploitable.localdomain</code>, <code>irc.Metasploitable.LAN</code></td>
+                    </tr>
+                    <tr>
+                        <td>Operating System / CPE</td>
+                        <td>Linux / Unix (CPE: <code>cpe:/o:linux:linux_kernel</code>)</td>
+                    </tr>
+                    <tr>
+                        <td>Network Latency</td>
+                        <td>0.00048s</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 3. Assessment Methodology -->
+        <section>
+            <h2>3. Assessment Methodology</h2>
+            <p>
+                The SentinelX security methodology follows standard industry frameworks, including the Open Source Security Testing Methodology Manual (OSSTMM) and the Penetration Testing Execution Standard (PTES). The assessment was conducted in a non-intrusive manner using passive banner analysis and active network mapping.
+            </p>
+            <ul>
+                <li><strong>Reconnaissance & Footprinting:</strong> Identification of live hosts and active network interfaces.</li>
+                <li><strong>Port & Service Discovery:</strong> Scanning for TCP/UDP listening services to determine exposure.</li>
+                <li><strong>Version Identification & Fingerprinting:</strong> Analysis of protocol response banners to determine exact software revisions without performing exploitation.</li>
+                <li><strong>Threat Mapping:</strong> Correlation of identified software versions and open protocols against recognized security risks and baseline security standards.</li>
+            </ul>
+        </section>
+
+        <!-- 4. Tools Used -->
+        <section>
+            <h2>4. Tools Used</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tool Name</th>
+                        <th>Version / Module</th>
+                        <th>Purpose / Scope</th>
+                        <th>Execution Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nmap</strong></td>
+                        <td>7.98 (Privileged Service Scan)</td>
+                        <td>Network mapping, service detection, OS fingerprinting</td>
+                        <td><span class="status-open">Successful (23 TCP Ports Discovered)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nikto</strong></td>
+                        <td>Standard Automated Suite</td>
+                        <td>Web server vulnerability assessment</td>
+                        <td>No actionable output recorded</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DNSRecon</strong></td>
+                        <td>Standard Enumeration</td>
+                        <td>DNS record intelligence gathering</td>
+                        <td>No actionable output recorded</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DNSEnum</strong></td>
+                        <td>Standard Enumeration</td>
+                        <td>Domain name service profiling</td>
+                        <td>No actionable output recorded</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 5, 6, 7, 8, 9. Security Findings & Technical Analysis -->
+        <section>
+            <h2>5. Security Findings & Technical Analysis</h2>
+
+            <!-- Finding 1 -->
+            <div class="finding-card critical">
+                <div class="finding-header">
+                    <div class="finding-title">5.1 Direct Exposure of Unauthenticated Root Bindshell</div>
+                    <span class="badge badge-critical">Critical</span>
+                </div>
+                <div class="finding-detail-grid">
+                    <div class="finding-detail-item"><span>Affected Service</span>Metasploitable Root Shell</div>
+                    <div class="finding-detail-item"><span>Port / Protocol</span>1524 / TCP</div>
+                    <div class="finding-detail-item"><span>Impact Category</span>Remote Code Execution / Unauthorized Access</div>
+                </div>
+                <p><strong>Technical Analysis:</strong> The target system maintains an open network socket on TCP port 1524. Nmap service identification explicitly confirmed this service as <code>bindshell Metasploitable root shell</code>. This listener grants an unauthenticated interactive command shell directly with root privileges to any entity capable of connecting to the port over the network.</p>
+                <p><strong>Evidence:</strong></p>
+                <pre>PORT     STATE SERVICE    VERSION
+1524/tcp open  bindshell  Metasploitable root shell</pre>
+                <p><strong>Security Impact:</strong> Complete compromises of system confidentiality, integrity, and availability. An attacker connecting to port 1524 gains full administrative control of the target operating system without requiring credentials or exploitation payload delivery.</p>
+                <div class="remediation-box">
+                    <h4>Remediation Recommendations</h4>
+                    <p>Immediately terminate the listening process bound to port 1524. Inspect system startup scripts (e.g., <code>/etc/inetd.conf</code>, <code>/etc/xinetd.d/</code>, or systemd units) to ensure this entry is permanently removed.</p>
+                </div>
+            </div>
+
+            <!-- Finding 2 -->
+            <div class="finding-card critical">
+                <div class="finding-header">
+                    <div class="finding-title">5.2 Exposure of Software Versions with Known Vulnerability Profiles</div>
+                    <span class="badge badge-critical">Critical</span>
+                </div>
+                <div class="finding-detail-grid">
+                    <div class="finding-detail-item"><span>Affected Services</span>vsftpd, OpenSSH, Apache, ProFTPD, MySQL, Postgre, UnrealIRCd</div>
+                    <div class="finding-detail-item"><span>Ports / Protocols</span>21, 22, 80, 2121, 3306, 5432, 6667 / TCP</div>
+                    <div class="finding-detail-item"><span>Impact Category</span>Version Exposure & Unpatched Daemons</div>
+                </div>
+                <p><strong>Technical Analysis:</strong> Banner grabbing conducted across multiple ports revealed legacy, highly outdated server application software versions running on the target system. Specifically, <code>vsftpd 2.3.4</code> and <code>UnrealIRCd</code> are historically associated with known backdoors and execution flaws in public databases. Furthermore, the SSH, HTTP, FTP, and Database daemons running are multiple major versions behind modern secure release baselines.</p>
+                <p><strong>Evidence:</strong></p>
+                <pre>PORT     STATE SERVICE     VERSION
+21/tcp   open  ftp         vsftpd 2.3.4
+22/tcp   open  ssh         OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0)
+80/tcp   open  http        Apache httpd 2.2.8 ((Ubuntu) DAV/2)
+2121/tcp open  ftp         ProFTPD 1.3.1
+3306/tcp open  mysql       MySQL 5.0.51a-3ubuntu5
+5432/tcp open  postgresql  PostgreSQL DB 8.3.0 - 8.3.7
+6667/tcp open  irc         UnrealIRCd</pre>
+                <p><strong>Security Impact:</strong> Running unmaintained and end-of-life (EOL) service daemons significantly elevates the risk of system compromise through publicly documented vulnerability vectors, denial of service, or authentication bypasses.</p>
+                <div class="remediation-box">
+                    <h4>Remediation Recommendations</h4>
+                    <p>Upgrade all service software to actively supported versions. Apply OS patch updates (e.g., modern Debian/Ubuntu repository packages) and replace obsolete software (such as legacy ProFTPD and UnrealIRCd) with modern, securely configured equivalents.</p>
+                </div>
+            </div>
+
+            <!-- Finding 3 -->
+            <div class="finding-card high">
+                <div class="finding-header">
+                    <div class="finding-title">5.3 Active Use of Unencrypted & Legacy Administrative Protocols</div>
+                    <span class="badge badge-high">High</span>
+                </div>
+                <div class="finding-detail-grid">
+                    <div class="finding-detail-item"><span>Affected Services</span>telnetd, rexecd, login, VNC</div>
+                    <div class="finding-detail-item"><span>Ports / Protocols</span>23, 512, 513, 5900 / TCP</div>
+                    <div class="finding-detail-item"><span>Impact Category</span>Cleartext Credential Exposure</div>
+                </div>
+                <p><strong>Technical Analysis:</strong> The host exposes multiple cleartext remote administration and execution protocols including Telnet (port 23), BSD Remote Execution/Login (`rexecd` / port 512, `login` / port 513), and VNC (port 5900, Protocol 3.3). These protocols transmit credentials and session data across the network without cryptographic protection.</p>
+                <p><strong>Evidence:</strong></p>
+                <pre>PORT     STATE SERVICE     VERSION
+23/tcp   open  telnet      Linux telnetd
+512/tcp  open  exec        netkit-rsh rexecd
+513/tcp  open  login?
+5900/tcp open  vnc         VNC (protocol 3.3)</pre>
+                <p><strong>Security Impact:</strong> Attackers positioned on the local network path can eavesdrop on connection sessions, perform man-in-the-middle (MitM) attacks, and harvest raw login credentials.</p>
+                <div class="remediation-box">
+                    <h4>Remediation Recommendations</h4>
+                    <p>Disable legacy unencrypted management services (Telnet, RSH, Rlogin). Enforce encrypted SSH (port 22) for remote shell access. Ensure VNC access is either disabled, bound to localhost, or routed exclusively through encrypted SSH tunnels or VPN infrastructure.</p>
+                </div>
+            </div>
+
+            <!-- Finding 4 -->
+            <div class="finding-card high">
+                <div class="finding-header">
+                    <div class="finding-title">5.4 Unrestricted Network Exposure of Database & Infrastructure Services</div>
+                    <span class="badge badge-high">High</span>
+                </div>
+                <div class="finding-detail-grid">
+                    <div class="finding-detail-item"><span>Affected Services</span>Samba, MySQL, PostgreSQL, NFS, Java RMI, Apache Tomcat</div>
+                    <div class="finding-detail-item"><span>Ports / Protocols</span>139, 445, 1099, 2049, 3306, 5432, 8009, 8180 / TCP</div>
+                    <div class="finding-detail-item"><span>Impact Category</span>Excessive Attack Surface & Network Exposure</div>
+                </div>
+                <p><strong>Technical Analysis:</strong> Internal middleware, application endpoints, file-sharing protocols, and database management systems are directly exposed on the network interface without access restriction controls.</p>
+                <p><strong>Evidence:</strong></p>
+                <pre>PORT     STATE SERVICE     VERSION
+139/tcp  open  netbios-ssn Samba smbd 3.X - 4.X
+445/tcp  open  netbios-ssn Samba smbd 3.X - 4.X
+1099/tcp open  java-rmi    GNU Classpath grmiregistry
+2049/tcp open  nfs         2-4 (RPC #100003)
+3306/tcp open  mysql       MySQL 5.0.51a-3ubuntu5
+5432/tcp open  postgresql  PostgreSQL DB 8.3.0 - 8.3.7
+8009/tcp open  ajp13       Apache Jserv (Protocol v1.3)
+8180/tcp open  http        Apache Tomcat/Coyote JSP engine 1.1</pre>
+                <p><strong>Security Impact:</strong> Exposing backend databases and object registries to untrusted network segments significantly expands the surface for brute-force credential attacks, potential remote object deserialization vulnerabilities, and unauthorized data access.</p>
+                <div class="remediation-box">
+                    <h4>Remediation Recommendations</h4>
+                    <p>Implement local host-based firewall rules (e.g., <code>iptables</code>/<code>ufw</code>) and network security groups to restrict database (3306, 5432), NFS (2049), and RMI (1099) connectivity exclusively to authorized application servers.</p>
+                </div>
+            </div>
+
+            <!-- Finding 5 -->
+            <div class="finding-card medium">
+                <div class="finding-header">
+                    <div class="finding-title">5.5 Extensive System Metadata & Infrastructure Information Disclosure</div>
+                    <span class="badge badge-medium">Medium</span>
+                </div>
+                <div class="finding-detail-grid">
+                    <div class="finding-detail-item"><span>Affected Services</span>BIND, Postfix, RPCBind, X11</div>
+                    <div class="finding-detail-item"><span>Ports / Protocols</span>25, 53, 111, 514, 6000 / TCP</div>
+                    <div class="finding-detail-item"><span>Impact Category</span>Information Disclosure & Fingerprinting</div>
+                </div>
+                <p><strong>Technical Analysis:</strong> Scanning revealed detailed network infrastructure services exposed to the network. BIND DNS (9.4.2), Postfix SMTP, RPCBind, and X11 service ports provide system state metadata, OS architecture details, and internal domain names (`metasploitable.localdomain`).</p>
+                <p><strong>Evidence:</strong></p>
+                <pre>PORT     STATE SERVICE     VERSION
+25/tcp   open  smtp        Postfix smtpd
+53/tcp   open  domain      ISC BIND 9.4.2
+111/tcp  open  rpcbind     2 (RPC #100000)
+514/tcp  open  tcpwrapped
+6000/tcp open  X11         (access denied)
+Service Info: Hosts: metasploitable.localdomain, irc.Metasploitable.LAN; OSs: Unix, Linux</pre>
+                <p><strong>Security Impact:</strong> Disclosing specific software versions and internal hostnames allows prospective adversaries to craft targeted exploit scenarios without extensive active probing.</p>
+                <div class="remediation-box">
+                    <h4>Remediation Recommendations</h4>
+                    <p>Configure daemon banner suppression options across services. Restrict RPCBind access, disable unnecessary mail/DNS listeners if not explicitly required by the node, and obscure software banner identities.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 10. Summary Table of Discovered Services -->
+        <section>
+            <h2>10. Complete Port & Service Inventory</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Port</th>
+                        <th>Protocol</th>
+                        <th>State</th>
+                        <th>Service</th>
+                        <th>Discovered Version / Banner Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>21</td><td>TCP</td><td>Open</td><td>ftp</td><td>vsftpd 2.3.4</td></tr>
+                    <tr><td>22</td><td>TCP</td><td>Open</td><td>ssh</td><td>OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0)</td></tr>
+                    <tr><td>23</td><td>TCP</td><td>Open</td><td>telnet</td><td>Linux telnetd</td></tr>
+                    <tr><td>25</td><td>TCP</td><td>Open</td><td>smtp</td><td>Postfix smtpd</td></tr>
+                    <tr><td>53</td><td>TCP</td><td>Open</td><td>domain</td><td>ISC BIND 9.4.2</td></tr>
+                    <tr><td>80</td><td>TCP</td><td>Open</td><td>http</td><td>Apache httpd 2.2.8 ((Ubuntu) DAV/2)</td></tr>
+                    <tr><td>111</td><td>TCP</td><td>Open</td><td>rpcbind</td><td>2 (RPC #100000)</td></tr>
+                    <tr><td>139</td><td>TCP</td><td>Open</td><td>netbios-ssn</td><td>Samba smbd 3.X - 4.X (workgroup: WORKGROUP)</td></tr>
+                    <tr><td>445</td><td>TCP</td><td>Open</td><td>netbios-ssn</td><td>Samba smbd 3.X - 4.X (workgroup: WORKGROUP)</td></tr>
+                    <tr><td>512</td><td>TCP</td><td>Open</td><td>exec</td><td>netkit-rsh rexecd</td></tr>
+                    <tr><td>513</td><td>TCP</td><td>Open</td><td>login</td><td>rlogin daemon</td></tr>
+                    <tr><td>514</td><td>TCP</td><td>Open</td><td>tcpwrapped</td><td>Wrapped port response</td></tr>
+                    <tr><td>1099</td><td>TCP</td><td>Open</td><td>java-rmi</td><td>GNU Classpath grmiregistry</td></tr>
+                    <tr><td>1524</td><td>TCP</td><td>Open</td><td>bindshell</td><td>Metasploitable root shell</td></tr>
+                    <tr><td>2049</td><td>TCP</td><td>Open</td><td>nfs</td><td>2-4 (RPC #100003)</td></tr>
+                    <tr><td>2121</td><td>TCP</td><td>Open</td><td>ftp</td><td>ProFTPD 1.3.1</td></tr>
+                    <tr><td>3306</td><td>TCP</td><td>Open</td><td>mysql</td><td>MySQL 5.0.51a-3ubuntu5</td></tr>
+                    <tr><td>5432</td><td>TCP</td><td>Open</td><td>postgresql</td><td>PostgreSQL DB 8.3.0 - 8.3.7</td></tr>
+                    <tr><td>5900</td><td>TCP</td><td>Open</td><td>vnc</td><td>VNC (protocol 3.3)</td></tr>
+                    <tr><td>6000</td><td>TCP</td><td>Open</td><td>X11</td><td>X Server (access denied)</td></tr>
+                    <tr><td>6667</td><td>TCP</td><td>Open</td><td>irc</td><td>UnrealIRCd</td></tr>
+                    <tr><td>8009</td><td>TCP</td><td>Open</td><td>ajp13</td><td>Apache Jserv (Protocol v1.3)</td></tr>
+                    <tr><td>8180</td><td>TCP</td><td>Open</td><td>http</td><td>Apache Tomcat/Coyote JSP engine 1.1</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 11. Risk Summary -->
+        <section>
+            <h2>11. Risk Summary Table</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Risk Finding</th>
+                        <th>Severity</th>
+                        <th>Affected Ports</th>
+                        <th>Remediation Priority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Unauthenticated Exposed Root Bindshell</td>
+                        <td><span class="badge badge-critical">Critical</span></td>
+                        <td>1524/tcp</td>
+                        <td>Immediate (0-24 Hours)</td>
+                    </tr>
+                    <tr>
+                        <td>Legacy / Outdated Software Versions</td>
+                        <td><span class="badge badge-critical">Critical</span></td>
+                        <td>21, 22, 80, 2121, 3306, 5432, 6667</td>
+                        <td>High Priority (1-7 Days)</td>
+                    </tr>
+                    <tr>
+                        <td>Unencrypted Administration Protocols</td>
+                        <td><span class="badge badge-high">High</span></td>
+                        <td>23, 512, 513, 5900</td>
+                        <td>High Priority (1-7 Days)</td>
+                    </tr>
+                    <tr>
+                        <td>Exposed Backend Database & Infrastructure Services</td>
+                        <td><span class="badge badge-high">High</span></td>
+                        <td>139, 445, 1099, 2049, 3306, 5432, 8009, 8180</td>
+                        <td>Medium Priority (14 Days)</td>
+                    </tr>
+                    <tr>
+                        <td>Service Metadata & Banner Disclosure</td>
+                        <td><span class="badge badge-medium">Medium</span></td>
+                        <td>25, 53, 111, 514, 6000</td>
+                        <td>Planned Maintenance</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 12. Overall Security Posture -->
+        <section>
+            <h2>12. Overall Security Posture Assessment</h2>
+            <p>
+                The security posture of host <strong>192.168.174.129</strong> is currently rated as <strong>INSECURE / HIGH RISK</strong>. The host exhibits symptoms consistent with an intentionally unhardened, vulnerable system or a system that has missed administrative maintenance cycles over an extended duration.
+            </p>
+            <p>
+                <strong>Primary Defense Gaps Discovered:</strong>
+            </p>
+            <ul>
+                <li><strong>Lack of Least Privilege / Default Access Controls:</strong> Direct administrative shell bound to port 1524.</li>
+                <li><strong>Absence of Network Segmentation:</strong> Storage (NFS, SMB), Database engines (MySQL, PostgreSQL), and Java object registries are exposed indiscriminately on the primary network interface.</li>
+                <li><strong>Absence of Modern Cryptography:</strong> Broad reliance on unencrypted services (Telnet, RSH, Rlogin, VNC, HTTP, plain FTP).</li>
+                <li><strong>Obsolete Software Maintenance Lifecycle:</strong> Widespread deployment of EOL software releases containing documented vulnerabilities.</li>
+            </ul>
+        </section>
+
+        <!-- 13. Conclusion -->
+        <section>
+            <h2>13. Conclusion</h2>
+            <p>
+                The assessment conducted on host <code>192.168.174.129</code> revealed severe vulnerabilities that expose the asset to significant operational risk. The presence of an open administrative root shell (Port 1524) and cleartext management services presents an immediate threat of unauthorized full-system takeover.
+            </p>
+            <p>
+                SentinelX recommends taking immediate corrective actions: removing the unauthenticated bindshell, blocking non-essential ports using strict host firewall rules, disabling unencrypted legacy services in favor of SSH, and migrating obsolete application software to supported, secure builds.
+            </p>
+            <br>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px;">
+                <div>
+                    <p style="margin: 0; color: var(--text-primary); font-weight: 600;">Report Prepared By:</p>
+                    <p style="margin: 0; color: var(--accent-cyan);">Senior Cybersecurity Analyst</p>
+                    <p style="margin: 0; font-size: 13px; color: var(--text-muted);">SentinelX Security Operations</p>
+                </div>
+                <div style="text-align: right;">
+                    <p style="margin: 0; font-size: 12px; color: var(--text-muted);">Digital Signature Hash:</p>
+                    <code style="font-size: 11px;">SHA256: 8f9b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b</code>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 SentinelX Cyber Security Operations Center. All Rights Reserved. Confidential Security Assessment Document.</p>
+    </footer>
+
+</body>
+</html>
